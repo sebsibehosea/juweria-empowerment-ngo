@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* simple font stack and base tweaks */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --accent: #236550;
+    /* emerald */
+    --accent-600: #059669;
+    --muted: #065f46;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    @apply bg-emerald-50 text-gray-800 antialiased;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* small utility tweaks used in components */
+
+.size-full {
+    min-height: 100%;
+}
+
+.container-max {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+.card-soft {
+    background: linear-gradient(180deg, rgba(240, 253, 244, 0.9), rgba(237, 249, 243, 0.9));
+    border-radius: 1rem;
+}
+
+
+/* simple focus ring */
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(6, 95, 70, 0.12);
+}
