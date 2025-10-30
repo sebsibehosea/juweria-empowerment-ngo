@@ -1,32 +1,138 @@
-import React from "react";
+// src/components/Navbar.tsx
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Menu, X, Search } from "lucide-react";
+import { motion } from "framer-motion";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const isAuthed = !!localStorage.getItem("token");
+
+  // Parse user name initial if present
+  let userName = '';
+  let userInitial = '';
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      userName = JSON.parse(userStr).name || '';
+      userInitial = userName.charAt(0).toUpperCase();
+    }
+  } catch {}
+
+  const navItems = [
+    { to: "/", label: "Home" },
+    { to: "/activities", label: "Activities" },
+    { to: "/resources", label: "Resources" },
+    { to: "/distribution", label: "Distribution" },
+    { to: "/donate", label: "Donate" },
+    { to: "/budget", label: "Budget" },
+    { to: "/faq", label: "FAQ" },
+    { to: "/comments", label: "Comments" },
+  ];
 
   return (
-    <nav className="flex justify-between items-center px-8 py-4 bg-white/80 backdrop-blur-md shadow-md fixed top-0 left-0 right-0 z-50">
-      <div className="flex items-center gap-2">
-        <img
-          src="/logo.png"
-          alt="Juweria Logo"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <h1 className="text-2xl font-bold text-green-700">Juweria Project</h1>
-      </div>
-      <ul className="hidden md:flex space-x-6 text-green-800">
-        {["home", "foundation", "education", "contact"].map((section) => (
-          <li key={section}>
-            <button
-              onClick={() => scrollToSection(section)}
-              className="hover:text-green-600 transition"
+    <header className="backdrop-blur-sm bg-white/60 sticky top-0 z-40 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logo} alt="Juweria" className="w-10 h-10 rounded-full object-cover" />
+          <div className="text-lg font-semibold text-emerald-800">Juweria</div>
+        </Link>
+        {/* Search bar - desktop */}
+        <form
+          className="hidden md:flex ml-8 flex-1 max-w-xs items-center bg-white border border-emerald-200 rounded-lg shadow px-2 py-1 focus-within:ring-2 focus-within:ring-emerald-400"
+          onSubmit={e => { e.preventDefault(); }}
+        >
+          <Search size={18} className="text-emerald-600 mr-2" />
+          <input
+            value={searchValue}
+            onChange={e => setSearchValue(e.target.value)}
+            type="text"
+            placeholder="Search..."
+            className="flex-1 bg-transparent outline-none text-sm"
+          />
+        </form>
+        <nav className="hidden md:flex items-center gap-6 ml-10">
+          {navItems
+            .filter((it) => (isAuthed ? true : ["/", "/donate"].includes(it.to)))
+            .map((it) => (
+            <NavLink
+              key={it.to}
+              to={it.to}
+              className={({ isActive }) =>
+                `text-sm font-medium ${isActive ? "text-emerald-700" : "text-gray-700 hover:text-emerald-600"}`
+              }
             >
-              {section.charAt(0).toUpperCase() + section.slice(1)}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
+              {it.label}
+            </NavLink>
+          ))}
+          {!isAuthed ? (
+            <>
+              <Link to="/auth/login" className="text-sm px-4 py-2 border rounded-lg text-emerald-700 border-emerald-700 hover:bg-emerald-50 transition">Login</Link>
+              <Link to="/auth/register" className="ml-2 text-sm px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">Register</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/profile" className="flex items-center gap-2 px-2 py-1" style={{ minWidth: '44px' }}>
+                <span className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-200 text-emerald-800 text-lg font-bold border border-emerald-400">
+                  {userInitial || 'P'}
+                </span>
+              </Link>
+              <button onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/'; }} className="text-sm px-4 py-2 border rounded-lg text-emerald-700 border-emerald-700 hover:bg-emerald-50 transition">Logout</button>
+            </>
+          )}
+        </nav>
+
+        <div className="md:hidden">
+          <button onClick={() => setOpen(!open)} aria-label="Toggle menu" className="p-2 rounded-md">
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="md:hidden bg-white/95 border-t">
+          <div className="px-4 py-4 space-y-3">
+            {/* Mobile search */}
+            <form className="mb-2 flex items-center bg-white border border-emerald-200 rounded-lg shadow px-2 py-1 focus-within:ring-2 focus-within:ring-emerald-400" onSubmit={e => {e.preventDefault();}}>
+              <Search size={18} className="text-emerald-600 mr-2" />
+              <input
+                value={searchValue}
+                onChange={e => setSearchValue(e.target.value)}
+                type="text"
+                placeholder="Search..."
+                className="flex-1 bg-transparent outline-none text-sm"
+              />
+            </form>
+            {navItems
+              .filter((it) => (isAuthed ? true : ["/", "/donate"].includes(it.to)))
+              .map((it) => (
+              <NavLink key={it.to} to={it.to} onClick={() => setOpen(false)} className="block text-gray-700">
+                {it.label}
+              </NavLink>
+            ))}
+            <div className="flex gap-2">
+              {!isAuthed ? (
+                <>
+                  <Link to="/auth/login" onClick={() => setOpen(false)} className="text-sm px-4 py-2 border rounded-lg text-emerald-700 border-emerald-700">Login</Link>
+                  <Link to="/auth/register" onClick={() => setOpen(false)} className="text-sm px-4 py-2 bg-emerald-600 text-white rounded-lg">Register</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/profile" onClick={() => setOpen(false)} className="flex items-center gap-2 px-2 py-1" style={{ minWidth: '44px' }}>
+                    <span className="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-200 text-emerald-800 text-lg font-bold border border-emerald-400">
+                      {userInitial || 'P'}
+                    </span>
+                  </Link>
+                  <button onClick={() => { localStorage.removeItem('token'); setOpen(false); localStorage.removeItem('user'); window.location.href = '/'; }} className="text-sm px-4 py-2 border rounded-lg text-emerald-700 border-emerald-700">Logout</button>
+                </>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </header>
   );
 }

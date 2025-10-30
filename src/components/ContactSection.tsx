@@ -28,7 +28,7 @@ export function ContactSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          Get in Touch
+         Get in Touch
         </motion.h2>
 
         <motion.p
@@ -43,7 +43,7 @@ export function ContactSection() {
 
         <div className="flex flex-col sm:flex-row justify-center gap-6">
           <a
-            href="mailto:info@example.com"
+            href="jadonsmith@gmail.com"
             className="flex items-center gap-2 bg-emerald-700 text-white px-6 py-3 rounded-lg shadow-md hover:bg-emerald-800 hover:shadow-xl transition-all duration-300"
           >
             <Mail className="w-5 h-5" /> Email Us
