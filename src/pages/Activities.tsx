@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 const DEFAULT_ACTIVITIES = [
@@ -14,7 +15,7 @@ export default function Activities() {
   const [editingIdx, setEditingIdx] = useState<number|null>(null);
   const [editText, setEditText] = useState("");
 
-  const handleMind = (e: React.FormEvent) => {
+  const handleMind = (e: FormEvent) => {
     e.preventDefault();
     if (mind.trim()) {
       setMindPosts([mind.trim(), ...mindPosts]);

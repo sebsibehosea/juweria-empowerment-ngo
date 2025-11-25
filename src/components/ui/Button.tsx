@@ -1,10 +1,9 @@
 // src/components/ui/Button.tsx
-import React from "react";
 import { motion } from "framer-motion";
+import type { HTMLMotionProps } from "framer-motion";
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends HTMLMotionProps<"button"> {
   variant?: "solid" | "outline";
-  children: React.ReactNode;
 }
 
 export default function Button({ variant = "solid", children, ...rest }: Props) {

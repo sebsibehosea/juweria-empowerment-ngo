@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import axiosClient from "../api/axiosClient";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -11,14 +12,14 @@ const Register = () => {
     birthdate: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-        const res = await axios.post("http://localhost:5000/api/auth/register", form);
+      const res = await axiosClient.post("/auth/register", form);
       alert("✅ Registration successful!");
       console.log(res.data);
       window.location.href = "/auth/login";

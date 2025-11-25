@@ -1,5 +1,5 @@
 // src/App.tsx
-import React from "react";
+import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -23,7 +23,7 @@ import Comments from "./pages/Comments";
 
 function useSessionTimeout() {
   const navigate = useNavigate();
-  React.useEffect(() => {
+  useEffect(() => {
     const doLogout = () => {
       localStorage.clear();
       navigate("/auth/login");

@@ -1,5 +1,6 @@
 // src/pages/Distribution.tsx
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { motion } from "framer-motion";
 import axiosClient from "../api/axiosClient";
 
@@ -28,7 +29,7 @@ export default function Distribution() {
     }
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(""); setMsg("");

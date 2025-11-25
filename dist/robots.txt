@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://juweriaproject.vercel.app/sitemap.xml

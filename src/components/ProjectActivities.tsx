@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, TrendingUp, Users, Heart, Shield } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
+import axiosClient from '../api/axiosClient';
 
 // map categories to icons for dynamic rendering
 const iconMap: Record<string, any> = {
@@ -29,10 +30,16 @@ export default function ProjectActivities() {
   const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/activities')
-      .then((res) => res.json())
-      .then((data) => setActivities(data))
+    let isMounted = true;
+    axiosClient
+      .get('/activities')
+      .then((res) => {
+        if (isMounted) setActivities(res.data);
+      })
       .catch((err) => console.error('❌ Error fetching activities:', err));
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

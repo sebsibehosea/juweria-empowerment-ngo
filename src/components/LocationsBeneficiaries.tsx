@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { MapPin, Users } from 'lucide-react';
 

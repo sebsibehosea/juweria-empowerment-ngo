@@ -1,5 +1,6 @@
 // src/pages/Donate.tsx
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 import Button from "../components/ui/Button";
 import { motion } from "framer-motion";
 import axiosClient from "../api/axiosClient";
@@ -9,7 +10,7 @@ export default function Donate() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleDonate = async (e: React.FormEvent) => {
+  const handleDonate = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const numericAmount = Number(amount);

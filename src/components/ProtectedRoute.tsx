@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function ProtectedRoute({ children }: Props) {

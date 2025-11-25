@@ -1,6 +1,7 @@
 // src/pages/Home.tsx
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import VisionMissionValues from "../components/VisionMissionValues";
 import { InteractiveRoadmap } from "../components/InteractiveRoadmap";
@@ -37,15 +38,15 @@ export default function Home() {
     animate: {
       y: [0, -14, 0, 12, 0],
       rotate: [0, 2.5, 0, -2.5, 0],
-      transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+      transition: { duration: 5, repeat: Infinity, ease: "easeInOut" as const }
     }
-  };
+  } satisfies Variants;
   const bg1 = {
-    animate: { y: [0, -20, 0, 25, 0], x: [0, 10, -16, 0], transition: { duration: 9, repeat: Infinity, ease: "easeInOut" } }
-  };
+    animate: { y: [0, -20, 0, 25, 0], x: [0, 10, -16, 0], transition: { duration: 9, repeat: Infinity, ease: "easeInOut" as const } }
+  } satisfies Variants;
   const bg2 = {
-    animate: { y: [0, 14, 0, -22, 0], x: [0, -14, 24, 0], transition: { duration: 12, repeat: Infinity, ease: "easeInOut" } }
-  };
+    animate: { y: [0, 14, 0, -22, 0], x: [0, -14, 24, 0], transition: { duration: 12, repeat: Infinity, ease: "easeInOut" as const } }
+  } satisfies Variants;
   useEffect(() => {
     const t = setInterval(() => setTestiIndex(i => (i + 1) % testimonials.length), 6000);
     return () => clearInterval(t);

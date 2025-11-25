@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const [showPwd, setShowPwd] = useState(false); // password visibility state
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await axiosClient.post("/auth/login", form);
@@ -21,7 +24,7 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify({ name: res.data.user.name || '', email: res.data.user.email || '' }));
       }
       alert("✅ Login successful!");
-      window.location.href = "/";
+      navigate("/");
     } catch (err: any) {
       console.error(err);
       const msg = err?.response?.data?.message || "Login failed";

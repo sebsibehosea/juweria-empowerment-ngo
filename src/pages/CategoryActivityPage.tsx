@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import { useParams, Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
@@ -61,7 +62,7 @@ export default function CategoryActivityPage() {
     }
   };
 
-  const onAdd = async (e: React.FormEvent) => {
+  const onAdd = async (e: FormEvent) => {
     e.preventDefault();
     setAdding(true);
     setAddErr("");

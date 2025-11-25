@@ -1,8 +1,7 @@
 import express from "express";
 import db from "../db.js";
 import {
-    authMiddleware,
-    requireRole
+    authMiddleware
 } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -10,7 +9,18 @@ const router = express.Router();
 // Get all activities (public)
 router.get("/", async (req, res) => {
     try {
-        const result = await db.query("SELECT * FROM activities ORDER BY id DESC", []);
+        const result = await db.query(
+            `SELECT id,
+                    slug,
+                    title,
+                    description,
+                    category,
+                    parent_category AS "parentCategory",
+                    meta,
+                    created_at
+             FROM activities
+             ORDER BY id DESC`
+        );
         res.json(result.rows);
     } catch (err) {
         res.status(500).json({
@@ -25,15 +35,29 @@ router.post("/", authMiddleware, async (req, res) => {
         title,
         description,
         date,
-        parentCategory
+        parentCategory,
+        category
     } = req.body;
+    if (!title || !description) {
+        return res.status(400).json({
+            message: "Title and description are required."
+        });
+    }
     try {
         const meta = date ? {
             date
         } : null;
+        const parentValue = parentCategory || null;
+        const categoryValue = category || parentValue;
         await db.query(
-            "INSERT INTO activities (title, description, category, meta, parentCategory) VALUES ($1, $2, $3, $4, $5)",
-            [title, description, parentCategory || null, meta ? JSON.stringify(meta) : null, parentCategory || null]
+            `INSERT INTO activities (title, description, category, parent_category, meta)
+             VALUES ($1, $2, $3, $4, $5)`, [
+                title,
+                description,
+                categoryValue,
+                parentValue,
+                meta ? JSON.stringify(meta) : null,
+            ]
         );
         res.json({
             message: "Activity added successfully"

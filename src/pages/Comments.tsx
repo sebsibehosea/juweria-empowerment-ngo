@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
 
 export default function Comments() {
   const [text, setText] = useState("");
   const [comments, setComments] = useState<{ id: number, content: string, time: string }[]>([]);
   const [counter, setCounter] = useState(0);
 
-  const addComment = (e: React.FormEvent) => {
+  const addComment = (e: FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
     setComments([{ id: counter, content: text.trim(), time: new Date().toLocaleString() }, ...comments]);

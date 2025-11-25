@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS activities (
   title TEXT NOT NULL,
   description TEXT,
   category TEXT,
+  parent_category TEXT,
   meta JSONB,
   created_at TIMESTAMP DEFAULT now()
 );
@@ -27,6 +28,8 @@ CREATE TABLE IF NOT EXISTS donations (
   donor_name TEXT,
   email TEXT,
   amount NUMERIC(12,2) NOT NULL,
+  category TEXT,
+  note TEXT,
   campaign_id INTEGER,
   created_at TIMESTAMP DEFAULT now()
 );

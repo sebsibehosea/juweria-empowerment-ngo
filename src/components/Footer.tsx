@@ -1,5 +1,4 @@
 // src/components/Footer.tsx
-import React from "react";
 import { Mail, Phone, Globe } from "lucide-react";
 
 export default function Footer() {

@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
 const Profile = () => {
+  const navigate = useNavigate();
   let userName = '';
   let userEmail = '';
   let userInitial = '';
@@ -36,7 +39,7 @@ const Profile = () => {
   const [pwMsg, setPwMsg] = useState("");
   const [pwSaving, setPwSaving] = useState(false);
 
-  const handleEdit = async (e: React.FormEvent) => {
+  const handleEdit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setMsg("");
@@ -57,7 +60,7 @@ const Profile = () => {
     }
   };
 
-  const handlePw = async (e: React.FormEvent) => {
+  const handlePw = async (e: FormEvent) => {
     e.preventDefault();
     setPwSaving(true);
     setPwMsg("");
@@ -142,7 +145,15 @@ const Profile = () => {
           )}
         </div>
         <hr className="my-6" />
-        <div className="text-gray-600 text-sm">Account settings and extra features coming soon!</div>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="text-gray-600 text-sm">Account settings and extra features coming soon!</div>
+          <button
+            onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigate('/auth/login'); }}
+            className="px-4 py-2 border rounded-lg text-emerald-700 border-emerald-700 hover:bg-emerald-50 transition"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   );

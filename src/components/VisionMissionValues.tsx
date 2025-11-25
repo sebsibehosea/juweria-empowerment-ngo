@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { Eye, Target, Heart, Flag } from 'lucide-react';
 

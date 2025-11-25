@@ -6,6 +6,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import type { PieLabelRenderProps } from "recharts";
 import { DollarSign } from "lucide-react";
 
 const budgetData = [
@@ -123,7 +124,10 @@ export default function BudgetOverview() {
                   cy="50%"
                   outerRadius={100}
                   dataKey="value"
-                  label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                  label={(props: PieLabelRenderProps) => {
+                    const pct = Number(props.percent ?? 0);
+                    return `${(pct * 100).toFixed(0)}%`;
+                  }}
                 >
                   {budgetData.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />

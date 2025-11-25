@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: Juweria API
+  version: 1.0.0
+  description: >
+    REST surface for the Juweria empowerment platform. All endpoints are
+    prefixed with `/api`.
+servers:
+  - url: https://your-backend-domain.com/api
+    description: Production
+  - url: http://localhost:5000/api
+    description: Local development
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        role:
+          type: string
+          enum: [beneficiary, volunteer, admin]
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        token:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+            role:
+              type: string
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        parentCategory:
+          type: string
+        meta:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+    Donation:
+      type: object
+      properties:
+        id:
+          type: integer
+        donor_name:
+          type: string
+        amount:
+          type: number
+          format: double
+        category:
+          type: string
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    HygieneRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        location:
+          type: string
+        beneficiary_count:
+          type: integer
+        package_type:
+          type: string
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Registration success
+        '409':
+          description: Email already exists
+        '500':
+          description: Server error
+  /auth/login:
+    post:
+      summary: Login and receive JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+  /activities:
+    get:
+      summary: List activities
+      responses:
+        '200':
+          description: Activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+    post:
+      summary: Create an activity
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                parentCategory:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '200':
+          description: Created
+        '401':
+          description: Unauthorized
+  /activities/{id}:
+    delete:
+      summary: Delete activity by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted
+        '401':
+          description: Unauthorized
+  /donations:
+    get:
+      summary: List donations
+      responses:
+        '200':
+          description: Donation list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Donation'
+    post:
+      summary: Create donation entry
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [donor_name, amount, category]
+              properties:
+                donor_name:
+                  type: string
+                amount:
+                  type: number
+                category:
+                  type: string
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Created
+  /donations/{id}:
+    patch:
+      summary: Update donation
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Donation'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete donation
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Deleted
+  /donations/summary:
+    get:
+      summary: Donation totals
+      responses:
+        '200':
+          description: Aggregate data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_amount:
+                    type: number
+                  count:
+                    type: integer
+  /hygiene:
+    get:
+      summary: List hygiene distributions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Hygiene records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HygieneRecord'
+    post:
+      summary: Record hygiene distribution
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [location, beneficiary_count]
+              properties:
+                location:
+                  type: string
+                beneficiary_count:
+                  type: integer
+                package_type:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Recorded
+

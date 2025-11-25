@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
 const DEFAULT_TITLES = [
@@ -45,7 +45,7 @@ export default function AllActivities() {
 
   useEffect(() => {
     fetchRows();
-    // eslint-disable-next-line
+     
   }, []);
 
   if (!token)
